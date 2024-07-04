@@ -48,7 +48,7 @@ public class PostService {
 
         Sort sort = Sort.by(Sort.Direction.DESC,sortBy);
         Pageable pageable = PageRequest.of(page,5,sort);
-        Page<PostResponseDto> postPage = postLikeRepository.findLikedPostsByUserId(user.getId(),pageable).map(PostResponseDto::new);
+        Page<PostResponseDto> postPage = postLikeRepository.findLikedPostsByUserIdWithPage(user.getId(), pageable).map(PostResponseDto::new);
         List<PostResponseDto> postList = postPage.getContent();
         return postList;
     }
