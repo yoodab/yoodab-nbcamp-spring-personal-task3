@@ -1,5 +1,6 @@
 package com.sparta.easyspring.comment.controller;
 
+import com.sparta.easyspring.auth.security.UserDetailsImpl;
 import com.sparta.easyspring.comment.dto.CommentRequestDto;
 import com.sparta.easyspring.comment.dto.CommentResponseDto;
 import com.sparta.easyspring.comment.service.CommentService;
@@ -17,6 +18,15 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
+
+    @GetMapping("/liked")
+    public ResponseEntity<List<CommentResponseDto>> getLikedComment(@RequestParam(value = "page",defaultValue = "1") int page,
+                                                              @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(commentService.getLikedComments(page-1,sortBy,userDetails.getUser()));
+    }
 
     @PostMapping("/{postId}")
     public ResponseEntity<CommentResponseDto> createComment(@PathVariable("postId") Long postId, @RequestBody CommentRequestDto commentRequestDto) {

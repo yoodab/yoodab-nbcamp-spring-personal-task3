@@ -6,11 +6,16 @@ import com.sparta.easyspring.comment.dto.CommentRequestDto;
 import com.sparta.easyspring.comment.dto.CommentResponseDto;
 import com.sparta.easyspring.comment.entity.Comment;
 import com.sparta.easyspring.comment.repository.CommentRepository;
+import com.sparta.easyspring.commentlike.repository.CommentLikeRepository;
 import com.sparta.easyspring.exception.CustomException;
 import com.sparta.easyspring.exception.ErrorEnum;
 import com.sparta.easyspring.post.entity.Post;
 import com.sparta.easyspring.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +28,7 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final PostService postService;
 
     public CommentResponseDto createNewComment(Long postId, CommentRequestDto requestDto) {
@@ -45,6 +51,15 @@ public class CommentService {
             commentResponseDtoList.add(entityToDto(comment));
         }
         return commentResponseDtoList;
+    }
+
+    public List<CommentResponseDto> getLikedComments(int page, String sortBy,User user) {
+
+        Sort sort = Sort.by(Sort.Direction.DESC,sortBy);
+        Pageable pageable = PageRequest.of(page,5,sort);
+        Page<CommentResponseDto> commentPage = commentLikeRepository.findLikedCommentsByUserId(user.getId(),pageable).map(CommentResponseDto::new);
+        List<CommentResponseDto> commentList = commentPage.getContent();
+        return commentList;
     }
 
     @Transactional
@@ -94,4 +109,6 @@ public class CommentService {
         Comment comment = findCommentbyId(commentId);
         comment.decreaseLikes();
     }
+
+
 }
