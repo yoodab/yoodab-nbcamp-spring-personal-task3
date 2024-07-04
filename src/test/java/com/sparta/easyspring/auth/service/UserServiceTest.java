@@ -1,19 +1,6 @@
 package com.sparta.easyspring.auth.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.anyString;
-import static org.mockito.BDDMockito.given;
-
-import com.sparta.easyspring.auth.dto.AuthRequestDto;
-import com.sparta.easyspring.auth.dto.AuthResponseDto;
-import com.sparta.easyspring.auth.dto.ProfileResponseDto;
-import com.sparta.easyspring.auth.dto.RefreshTokenRequestDto;
-import com.sparta.easyspring.auth.dto.UpdatePasswordRequestDto;
-import com.sparta.easyspring.auth.dto.UpdateProfileRequestDto;
+import com.sparta.easyspring.auth.dto.*;
 import com.sparta.easyspring.auth.entity.PasswordHistory;
 import com.sparta.easyspring.auth.entity.User;
 import com.sparta.easyspring.auth.entity.UserRoleEnum;
@@ -22,16 +9,7 @@ import com.sparta.easyspring.auth.repository.UserRepository;
 import com.sparta.easyspring.auth.security.UserDetailsImpl;
 import com.sparta.easyspring.auth.util.JwtUtil;
 import com.sparta.easyspring.exception.CustomException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -39,6 +17,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -485,7 +473,7 @@ public class UserServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
-        ResponseEntity<ProfileResponseDto> response = userService.getProfile(1L);
+        ResponseEntity<ProfileDetailResponseDto> response = userService.getProfile(1L);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -1,11 +1,6 @@
 package com.sparta.easyspring.auth.service;
 
-import com.sparta.easyspring.auth.dto.AuthRequestDto;
-import com.sparta.easyspring.auth.dto.AuthResponseDto;
-import com.sparta.easyspring.auth.dto.ProfileResponseDto;
-import com.sparta.easyspring.auth.dto.RefreshTokenRequestDto;
-import com.sparta.easyspring.auth.dto.UpdatePasswordRequestDto;
-import com.sparta.easyspring.auth.dto.UpdateProfileRequestDto;
+import com.sparta.easyspring.auth.dto.*;
 import com.sparta.easyspring.auth.entity.PasswordHistory;
 import com.sparta.easyspring.auth.entity.User;
 import com.sparta.easyspring.auth.entity.UserRoleEnum;
@@ -14,11 +9,9 @@ import com.sparta.easyspring.auth.repository.PasswordHistoryRepository;
 import com.sparta.easyspring.auth.repository.UserRepository;
 import com.sparta.easyspring.auth.security.UserDetailsImpl;
 import com.sparta.easyspring.auth.util.JwtUtil;
+import com.sparta.easyspring.commentlike.repository.CommentLikeRepository;
 import com.sparta.easyspring.exception.CustomException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import com.sparta.easyspring.postlike.repository.PostLikeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 import static com.sparta.easyspring.exception.ErrorEnum.*;
 
@@ -38,6 +36,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final JwtUtil jwtUtil;
+    private final PostLikeRepository postLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     private final String USERID_REGEX = "^[a-z0-9]{4,10}$";
     private final String USERPASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:'\",.<>/?]).{8,15}$";
@@ -242,15 +242,17 @@ public class UserService {
             .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
-    public ResponseEntity<ProfileResponseDto> getProfile(Long id) {
+    public ResponseEntity<ProfileDetailResponseDto> getProfile(Long id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         Long userId = user.getId();
         String username = user.getUsername();
         String introduction = user.getIntroduction();
+        int likedPostsCount = postLikeRepository.countByUserId(userId);
+        int likedCommentsCount = commentLikeRepository.countByUserId(userId);
 
-        ProfileResponseDto responseDto = new ProfileResponseDto(userId, username, introduction);
+        ProfileDetailResponseDto responseDto = new ProfileDetailResponseDto(userId, username, introduction, likedPostsCount, likedCommentsCount);
 
         return ResponseEntity.ok().body(responseDto);
     }
