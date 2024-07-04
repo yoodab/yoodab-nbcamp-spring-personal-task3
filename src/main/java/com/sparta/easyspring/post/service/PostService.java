@@ -9,6 +9,7 @@ import com.sparta.easyspring.post.dto.PostRequestDto;
 import com.sparta.easyspring.post.dto.PostResponseDto;
 import com.sparta.easyspring.post.entity.Post;
 import com.sparta.easyspring.post.repository.PostRepository;
+import com.sparta.easyspring.postlike.repository.PostLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final FollowService followService;
+    private final PostLikeRepository postLikeRepository;
 
     public PostResponseDto addPost(PostRequestDto requestDto, User user) {
         Post post = new Post(requestDto,user);
@@ -42,6 +44,15 @@ public class PostService {
         List<PostResponseDto> postList = postPage.getContent();
         return postList;
     }
+    public List<PostResponseDto> getLikedPosts(int page, String sortBy,User user) {
+
+        Sort sort = Sort.by(Sort.Direction.DESC,sortBy);
+        Pageable pageable = PageRequest.of(page,5,sort);
+        Page<PostResponseDto> postPage = postLikeRepository.findLikedPostsByUserId(user.getId(),pageable).map(PostResponseDto::new);
+        List<PostResponseDto> postList = postPage.getContent();
+        return postList;
+    }
+
 
     public PostResponseDto getPost(Long postId) {
         Post post = findPostbyId(postId);
@@ -102,4 +113,6 @@ public class PostService {
         );
         return post;
     }
+
+
 }

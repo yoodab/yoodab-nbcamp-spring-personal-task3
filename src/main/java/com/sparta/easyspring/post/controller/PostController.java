@@ -35,6 +35,15 @@ public class PostController {
                 .body(postService.getAllPost(page-1,sortBy));
     }
 
+    @GetMapping("/liked")
+    public ResponseEntity<List<PostResponseDto>> getLikedPost(@RequestParam(value = "page",defaultValue = "1") int page,
+                                                            @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(postService.getLikedPosts(page-1,sortBy,userDetails.getUser()));
+    }
+
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPost(@PathVariable(name = "postId") Long postId){
         return ResponseEntity
