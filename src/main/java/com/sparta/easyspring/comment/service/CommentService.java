@@ -57,7 +57,7 @@ public class CommentService {
 
         Sort sort = Sort.by(Sort.Direction.DESC,sortBy);
         Pageable pageable = PageRequest.of(page,5,sort);
-        Page<CommentResponseDto> commentPage = commentLikeRepository.findLikedCommentsByUserId(user.getId(),pageable).map(CommentResponseDto::new);
+        Page<CommentResponseDto> commentPage = commentLikeRepository.findLikedCommentsByUserIdWithPage(user.getId(), pageable).map(CommentResponseDto::new);
         List<CommentResponseDto> commentList = commentPage.getContent();
         return commentList;
     }

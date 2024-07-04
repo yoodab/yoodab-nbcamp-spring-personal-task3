@@ -3,17 +3,13 @@ package com.sparta.easyspring.commentlike.entity;
 import com.sparta.easyspring.auth.entity.User;
 import com.sparta.easyspring.comment.entity.Comment;
 import com.sparta.easyspring.timestamp.TimeStamp;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "commentlikes")
+@Getter
 @NoArgsConstructor
 public class CommentLike extends TimeStamp {
 
