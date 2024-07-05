@@ -44,6 +44,15 @@ public class PostController {
                 .body(postService.getLikedPosts(page-1,sortBy,userDetails.getUser()));
     }
 
+    @GetMapping("/follow")
+    public ResponseEntity<List<PostResponseDto>> getFollowPost(@RequestParam(value = "page", defaultValue = "1") int page,
+                                                               @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(postService.getFollowPost(page - 1, sortBy, userDetails.getUser()));
+    }
+
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPost(@PathVariable(name = "postId") Long postId){
         return ResponseEntity
@@ -70,6 +79,6 @@ public class PostController {
                                                                   @RequestParam(value = "page",defaultValue = "1") int page,
                                                                   @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(postService.getAllFollowPost(followingId,userDetails.getUser(),page-1,sortBy));
+                .body(postService.getFollowPost(followingId, userDetails.getUser(), page - 1, sortBy));
     }
 }

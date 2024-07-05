@@ -8,6 +8,8 @@ import com.sparta.easyspring.follow.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.sparta.easyspring.exception.ErrorEnum.*;
 
 @Service
@@ -40,5 +42,9 @@ public class FollowService {
 
     public Follow findFollowById(Long followingId, User user){
         return followRepository.findByFollowingIdAndUser(followingId, user);
+    }
+
+    public List<Long> findFollowUser(User user) {
+        return followRepository.findByUserId(user.getId());
     }
 }

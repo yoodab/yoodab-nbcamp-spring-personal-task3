@@ -53,6 +53,18 @@ public class PostService {
         return postList;
     }
 
+    public List<PostResponseDto> getFollowPost(int page, String sortBy, User user) {
+        Sort sort = Sort.by(Sort.Direction.DESC, sortBy);
+        Pageable pageable = PageRequest.of(page, 5, sort);
+        List<Long> followedUsers = followService.findFollowUser(user);
+
+
+        Page<PostResponseDto> postPage = postRepository.findPostsByFollowedUsers(followedUsers, pageable).map(PostResponseDto::new);
+        System.out.println("postPage.toString() = " + postPage);
+        List<PostResponseDto> postList = postPage.getContent();
+        return postList;
+    }
+
 
     public PostResponseDto getPost(Long postId) {
         Post post = findPostbyId(postId);
@@ -77,7 +89,8 @@ public class PostService {
         }
         postRepository.delete(post);
     }
-    public List<PostResponseDto> getAllFollowPost(Long followingId, User user,int page, String sortBy){
+
+    public List<PostResponseDto> getFollowPost(Long followingId, User user, int page, String sortBy) {
         User checkUser = userService.findUserById(followingId);
         Follow checkFollow = followService.findFollowById(checkUser.getId(),user);
         if(checkFollow==null){
@@ -94,6 +107,7 @@ public class PostService {
 
         return followPostList;
     }
+
 
     @Transactional
     public void increaseLikes(Long postId){
