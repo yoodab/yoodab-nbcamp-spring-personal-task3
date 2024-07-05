@@ -3,6 +3,7 @@ package com.sparta.easyspring.follow.service;
 import com.sparta.easyspring.auth.entity.User;
 import com.sparta.easyspring.auth.service.UserService;
 import com.sparta.easyspring.exception.CustomException;
+import com.sparta.easyspring.follow.dto.Top10ProfileDto;
 import com.sparta.easyspring.follow.entity.Follow;
 import com.sparta.easyspring.follow.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,10 @@ public class FollowService {
     }
 
     public List<Long> findFollowUser(User user) {
-        return followRepository.findByUserId(user.getId());
+        return followRepository.findFollowingIdsByUserId(user.getId());
+    }
+
+    public List<Top10ProfileDto> findTop10Profile() {
+        return followRepository.findTop10UsersByFollowerCount();
     }
 }
